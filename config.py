@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # --- 数据库 ---
-    database_url: str = "postgresql+asyncpg://postgres:password@localhost:5432/chui_chui_xia"
+    database_url: str = "sqlite+aiosqlite:///./chui_chui_xia.db"  # 默认 SQLite（Railway 生产环境）
 
     # --- Supabase (可选，用作 PostgreSQL 连接器) ---
     supabase_url: Optional[str] = None
