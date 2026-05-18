@@ -54,18 +54,8 @@ app = FastAPI(
 # 允许微信小程序和前端访问
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "*",  # 生产环境允许所有来源（API 无敏感数据）
-        "http://localhost:13000",           # 微信开发者工具
-        "https://servicewechat.com",       # 微信小程序生产环境
-        "https://chui-chui-xia.com",       # 官网（如果有）
-        "http://192.168.0.107:8080",       # 局域网前端
-        "http://192.168.0.107",            # 局域网前端（无端口）
-        "http://localhost:8080",           # 本地前端
-        "http://localhost:3000",           # React 开发服务器
-        "https://cool-starship-22a498.netlify.app",  # Netlify 前端（生产环境）
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],  # 允许所有来源（JWT 认证，不依赖 Cookie）
+    allow_credentials=False,  # 通配符 * 不能与 credentials 同时使用
     allow_methods=["*"],
     allow_headers=["*"],
 )
