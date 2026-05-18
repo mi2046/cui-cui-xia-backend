@@ -1,9 +1,8 @@
 fastapi==0.115.0
 uvicorn[standard]==0.30.0
 sqlalchemy==2.0.31
-aiosqlite==0.21.0  # SQLite 异步驱动（Railway 生产环境用）
-# asyncpg==0.29.0  # Railway 编译失败，生产环境暂用 SQLite
-# supabase==2.4.5  # Railway 编译失败，生产环境暂用 SQLite
+aiosqlite==0.21.0
+email-validator>=2.0.0
 pydantic==2.8.2
 pydantic-settings==2.4.0
 openai>=1.12.0
@@ -12,5 +11,5 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
 apscheduler==3.10.4
 httpx==0.27.0
-sentry-sdk==2.8.0
 python-dotenv==1.0.1
+aioboto3>=12.0.0
