@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from pydantic import BaseModel, EmailStr
@@ -16,11 +15,25 @@ from config import settings
 from typing import Optional, List
 from services.disclaimer_service import get_disclaimer, validate_agreement
 import httpx
+import bcrypt as _bcrypt
 
 
 router = APIRouter(prefix="/api/auth", tags=["认证"])
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    """验证密码（兼容新旧哈希格式）"""
+    try:
+        return _bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except Exception:
+        return False
+
+
+def get_password_hash(password: str) -> str:
+    """哈希密码"""
+    hashed = _bcrypt.hashpw(password.encode("utf-8"), _bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 
 # ==================== Pydantic Schemas ====================
@@ -77,14 +90,6 @@ class WechatLoginRequest(BaseModel):
 
 
 # ==================== 工具函数 ====================
-
-def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
