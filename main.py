@@ -54,8 +54,8 @@ app = FastAPI(
 # 允许微信小程序和前端访问
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许所有来源（JWT 认证，不依赖 Cookie）
-    allow_credentials=False,  # 通配符 * 不能与 credentials 同时使用
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -65,10 +65,11 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
     logger.error(f"未处理异常: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
-        content={"detail": "服务器内部错误，请稍后重试"},
+        content={"detail": f"错误: {type(exc).__name__}: {str(exc)}", "trace": traceback.format_exc()[-500:]},
     )
 
 
